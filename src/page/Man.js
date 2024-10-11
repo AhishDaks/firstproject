@@ -1,11 +1,9 @@
 import { useParams,Link,useNavigate} from "react-router-dom";
-import { useEffect,useState } from "react";
+import { useEffect} from "react";
 import { gg } from "../DB/Users";
 import { FaUser } from "react-icons/fa";
-import Addemp from "./Addemp";
 export default function MAN(){
 
-    const[add,Setadd]=useState(false);
 
     const{id}=useParams();
 

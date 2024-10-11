@@ -32,21 +32,16 @@ if(!localStorage.getItem("au")) Navigate("/login");
   return (
       <div>
          <div>
-      <Link   className="flex align-items-center lo" to={`/${id}/logout`}>LOG OUT</Link>
-    
-     <FaUser style={{paddingTop:"5px",marginRight:"2px"}}/>:{y}
-    <h1>{head} NAME: {name.toUpperCase()}</h1>
-   
-  </div>
-  <h2 >MANAGER FOR HIM: {Manager[0].name.toUpperCase()}</h2>
-
-<h3>TASKS ARE:</h3>
-
-  <ol>
-    {tasks}
-  </ol>
-
-  </div>)
+          <Link   className="flex align-items-center lo" to={`/${id}/logout`}>LOG OUT</Link>
+          <FaUser style={{paddingTop:"5px",marginRight:"2px"}}/>:{y}
+          <h1>{head} NAME: {name.toUpperCase()}</h1>
+        </div>
+         <h2 >MANAGER FOR HIM: {Manager[0].name.toUpperCase()}</h2>
+         <h3>TASKS ARE:</h3>
+        <ol>
+         {tasks}
+        </ol>
+      </div>)
   
 }
 
