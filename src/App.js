@@ -1,11 +1,15 @@
-import LOGIN from "./Login";
-import EMP from "./emp";
-import Logout from "./Logout";
-import MAN from "./Man";
+import LOGIN from "./page/Login";
+import EMP from "./page/emp";
+import Logout from "./page/Logout";
+import MAN from "./page/Man";
 import { createBrowserRouter,RouterProvider } from "react-router-dom";
 
 
      const router=createBrowserRouter([
+      {
+        path:"/",
+        element:<LOGIN />,
+      },
           {
             path:"/login",
             element:<LOGIN />,

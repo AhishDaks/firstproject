@@ -1,15 +1,13 @@
-import { useState,useEffect } from "react";
-import { gg } from "./Users";
+import { useEffect } from "react";
+import { gg } from "../DB/Users";
 import { useParams } from "react-router-dom";
 import { useNavigate} from "react-router-dom";
 import { Link } from "react-router-dom";
-import Logout from "./Logout";
-import "./S.css";
+import { FaUser } from "react-icons/fa";
+import "../Style/S.css";
 export default function EMP(){
   const Navigate=useNavigate();
 
- 
-  const [login,setLogin]=useState(true);
 
   const {id}=useParams();
 
@@ -24,19 +22,19 @@ export default function EMP(){
     head="EMPLOYEE";
     name=r[0].name;
 
-  
+  let y=localStorage.getItem("au");
   useEffect(()=>{
 if(!localStorage.getItem("au")) Navigate("/login");
-},[login]);
+});
 
  
   
-  return (<div style={{backgroundColor:"gray"}}>
+  return (
       <div>
+         <div>
       <Link   className="flex align-items-center lo" to={`/${id}/logout`}>LOG OUT</Link>
-    </div>
-    <div className="login">
-      Loggedin User:{name}</div><center><div>
+    
+     <FaUser style={{paddingTop:"5px",marginRight:"2px"}}/>:{y}
     <h1>{head} NAME: {name.toUpperCase()}</h1>
    
   </div>
@@ -47,7 +45,7 @@ if(!localStorage.getItem("au")) Navigate("/login");
   <ol>
     {tasks}
   </ol>
-  </center>
+
   </div>)
   
 }
