@@ -1,47 +1,59 @@
-
+import { useState,useEffect } from "react";
 import { gg } from "./Users";
-export default function EMP({as,bb}){
-  let rp=as[0].isManager;
-  let employee;
-  let mana;
-  if(!rp){
-     let i=as[0].manager_id;
-     let man=gg.filter((a)=>a.manage_id===i);
-     mana=man[0].name;
-  }
-  if(rp){
-   let mm=as[0].employees.map((ma)=> gg.filter((al)=>al.emp_id===ma));
-  
-   employee=mm.map((a)=>a[0].name)
+import { useParams } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
+import { Link } from "react-router-dom";
+import Logout from "./Logout";
+import "./S.css";
+export default function EMP(){
+  const Navigate=useNavigate();
 
-   employee=employee.map((m)=>{ return <li><a href="/.com ">{m}</a></li>})
+ 
+  const [login,setLogin]=useState(true);
+
+  const {id}=useParams();
+
+  let Manager;
+  let tasks;
+  let head="EMPLOYEE";
+  let name;
+ 
+   const r=gg.filter((a)=>a.emp_id==id);
+    Manager=gg.filter((o)=>o.manage_id==r[0].manager_id);
+    tasks=r[0].task.map(((p)=><div key={p}><li>{p.toUpperCase()}</li></div>));
+    head="EMPLOYEE";
+    name=r[0].name;
+
+  
+  useEffect(()=>{
+if(!localStorage.getItem("au")) Navigate("/login");
+},[login]);
+
+ 
+  
+  return (<div style={{backgroundColor:"gray"}}>
+      <div>
+      <Link   className="flex align-items-center lo" to={`/${id}/logout`}>LOG OUT</Link>
+    </div>
+    <div className="login">
+      Loggedin User:{name}</div><center><div>
+    <h1>{head} NAME: {name.toUpperCase()}</h1>
    
-  }
-  let rr=as.map((a)=><div style={{backgroundColor:"yellow"}}>
-    <button style={{backgroundColor:"red"}}onClick={bb}>LOGOUT</button>
-    <center>
-    <h1>{a.isManager===true?<h2>MANAGER</h2>:<h2>EMPLOYEE</h2>}</h1>
-   
-    <div>
-      NAME:{a.name}
-    </div>
-    <br></br>
-    <div>
-      AGE:{a.age}
-    </div>
-    <br></br>
-    <div>
-      TASK:{a.task?<ol  type="1">{a.task.map((a)=><li>{a}</li>)}</ol>:"no"}
-    </div>
-    <br></br>
-    <div>
-      {rp?"MANAGER ID":"EMPLOYEE ID"}:{rp?a.manage_id:a.emp_id}
-    </div>
-    <br></br>
-    <div>
-        {rp?"Employee under him":"Manger for him"}:{rp?<ol type="1">{employee}</ol>:<div>{mana}</div>}
-    </div>
-    </center>
-    </div>);
-  return <h1>{rr}</h1> 
+  </div>
+  <h2 >MANAGER FOR HIM: {Manager[0].name.toUpperCase()}</h2>
+
+<h3>TASKS ARE:</h3>
+
+  <ol>
+    {tasks}
+  </ol>
+  </center>
+  </div>)
+  
 }
+
+
+
+
+
+ 
