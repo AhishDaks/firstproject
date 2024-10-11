@@ -29,10 +29,7 @@ export default function MAN(){
         
     let name=r[0].name;
 
-    function d(){
-      Setadd(true);
-    }
-
+  
     return (
     <div style={{color:"black"}}>
       <div>
