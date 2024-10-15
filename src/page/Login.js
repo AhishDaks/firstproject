@@ -1,4 +1,4 @@
-import { useState,useEffect} from "react";
+import { useState} from "react";
 import { useNavigate} from "react-router-dom";
 import {gg} from "../DB/Users";
 import "../Style/S.css";
@@ -6,7 +6,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+import {  SignInPage } from '@toolpad/core';
+
 export default function LOGIN(){
+
     const Navigate=useNavigate();
     const [type,SetType]=useState();
     const [name,setName]=useState("");
@@ -15,10 +18,6 @@ export default function LOGIN(){
     const[err,setErr]=useState(false);
 
     let aa="invalid username or password!";
-
-    useEffect(()=>{
-        setTimeout(()=> SetType(false),500)  
-    },[type])
 
      function asm(e){
        SetType(false);
@@ -48,7 +47,8 @@ export default function LOGIN(){
      }
 
     return (
-    <div className=" oo flex items-center">{type?<h1 className="as">TYPING....</h1>:<h1 >LOG IN</h1>}
+    <div className=" oo "><h1 ><SignInPage /></h1>
+
         <form onSubmit={asm}>
         <p style={{color:"red"}}>{err&&aa}</p>
         <FaUser style={{height:"50px",marginRight:"2px"}}/> <TextField label="Username" id="outlined-basic" onChange={(e)=>{SetType(true);setName(e.target.value)}} variant="outlined" />
@@ -59,7 +59,11 @@ export default function LOGIN(){
         <br></br>
         {name.length>=2&&pass.length>=2? <Button type="submit" variant="contained" color="success">Submit</Button>: <Button disabled variant="contained" color="error">Submit</Button>}
         </form>
+
    </div>)
     
  
 }
+
+
+
