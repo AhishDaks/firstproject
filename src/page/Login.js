@@ -7,9 +7,12 @@ import Button from '@mui/material/Button';
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import {  SignInPage } from '@toolpad/core';
+import Moda from "../modal/Moda";
 
 export default function LOGIN(){
-
+  
+  
+  
     const Navigate=useNavigate();
     const [type,SetType]=useState();
     const [name,setName]=useState("");
@@ -45,10 +48,11 @@ export default function LOGIN(){
         setErr(true);
       }
      }
-
+ 
     return (
     <div className=" oo "><h1 ><SignInPage /></h1>
-
+   
+         <Moda/>
         <form onSubmit={asm}>
         <p style={{color:"red"}}>{err&&aa}</p>
         <FaUser style={{height:"50px",marginRight:"2px"}}/> <TextField label="Username" id="outlined-basic" onChange={(e)=>{SetType(true);setName(e.target.value)}} variant="outlined" />
@@ -64,6 +68,10 @@ export default function LOGIN(){
     
  
 }
+
+
+
+
 
 
 
