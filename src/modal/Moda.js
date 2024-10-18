@@ -39,7 +39,7 @@ export default function Moda(){
         'environmentId':'670e99ff59c9b368f802bb25',
         'projectid':'670e99ff59c9b368f802bb24'
       }
-    }).then((re)=>setShow(<SimpleAlert/>),setTimeout(()=>handleClose(),2000))
+    }).then((re)=>setShow(<SimpleAlert/>),setTimeout(()=>handleClose(),3000))
     .catch((er)=>setShow(<Alert severity="error">submission failed</Alert>))
   }
     
