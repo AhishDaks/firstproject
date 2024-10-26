@@ -1,77 +1,97 @@
-import { useState} from "react";
-import { useNavigate} from "react-router-dom";
-import {gg} from "../DB/Users";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Style/S.css";
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { FaUser } from "react-icons/fa";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
-import {  SignInPage } from '@toolpad/core';
+import { SignInPage } from "@toolpad/core";
 import Moda from "../modal/Moda";
+import { fetchDat } from "../DB/API";
+export default function LOGIN() {
+  const Navigate = useNavigate();
 
-export default function LOGIN(){
-  
-  
-  
-    const Navigate=useNavigate();
-    const [type,SetType]=useState();
-    const [name,setName]=useState("");
-    const [pass,setPass]=useState("");
+  const [type, SetType] = useState();
+  const [name, setName] = useState("");
+  const [pass, setPass] = useState("");
 
-    const[err,setErr]=useState(false);
+  const [err, setErr] = useState(false);
 
-    let aa="invalid username or password!";
+  let aa = "invalid username or password!";
 
-     function asm(e){
-       SetType(false);
-       e.preventDefault();
-       let r=gg.filter((a)=>a.name.toLowerCase()===name.toLowerCase()&&a.password===pass);
+  async function asm(e) {
+    SetType(false);
+    e.preventDefault();
+    const res = await fetchDat();
+    let ko = res.filter((a) => a.email == name && a.password == pass);
+    if (ko.length) {
+      let g = JSON.stringify(...ko);
 
-       if(r.length!==0){
-       
-         if(r[0].emp_id)
-        {
-           localStorage.setItem("au",r[0].name);
-           Navigate(`/${r[0].emp_id}/employee`);
-        }
-
-        else
-        {
-          localStorage.setItem("au",r[0].name);
-          localStorage.setItem("auth",r[0].name);
-          Navigate(`/${r[0].manage_id}/manager`);
-        }
-        
+      if (!ko[0].isManager) {
+        localStorage.setItem("au", g);
+        Navigate(`/${ko[0].id}/employee`);
+      } else {
+        localStorage.setItem("au", g);
+        localStorage.setItem("auth", g);
+        Navigate(`/${ko[0].id}/manager`);
       }
-      else
-      {
-        setErr(true);
-      }
-     }
- 
-    return (
-    <div className=" oo "><h1 ><SignInPage /></h1>
-   
-         <Moda/>
-        <form onSubmit={asm}>
-        <p style={{color:"red"}}>{err&&aa}</p>
-        <FaUser style={{height:"50px",marginRight:"2px"}}/> <TextField label="Username" id="outlined-basic" onChange={(e)=>{SetType(true);setName(e.target.value)}} variant="outlined" />
-        <br></br>
-        <br></br>
-        <RiLockPasswordFill style={{height:"50px",marginRight:"2px"}}/><TextField id="outlined-basic" onChange={(e)=>{SetType(true);setPass(e.target.value)}}label="Password" variant="outlined" />
-        <br></br>
-        <br></br>
-        {name.length>=2&&pass.length>=2? <Button type="submit" variant="contained" color="success">Submit</Button>: <Button disabled variant="contained" color="error">Submit</Button>}
-        </form>
+    } else {
+      setErr(true);
+    }
+  }
 
-   </div>)
-    
- 
+  return (
+    <div className=" oo ">
+      <h1>
+        <SignInPage />
+      </h1>
+
+      <Moda />
+      <form onSubmit={asm}>
+        <p style={{ color: "red" }}>{err && aa}</p>
+        <MdEmail style={{ height: "50px", marginRight: "2px" }} />{" "}
+        <TextField
+          label="Email"
+          id="outlined-basic"
+          onChange={(e) => {
+            SetType(true);
+            setName(e.target.value);
+          }}
+          type="email"
+          variant="outlined"
+        />
+        <br></br>
+        <br></br>
+        <RiLockPasswordFill style={{ height: "50px", marginRight: "2px" }} />
+        <TextField
+          id="outlined-basic"
+          onChange={(e) => {
+            SetType(true);
+            setPass(e.target.value);
+          }}
+          label="Password"
+          variant="outlined"
+        />
+        <br></br>
+        <br></br>
+        {name.length >= 2 && pass.length >= 2 ? (
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+          >
+            Submit
+          </Button>
+        ) : (
+          <Button
+            disabled
+            variant="contained"
+            color="error"
+          >
+            Submit
+          </Button>
+        )}
+      </form>
+    </div>
+  );
 }
-
-
-
-
-
-
-

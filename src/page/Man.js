@@ -1,155 +1,189 @@
-import { useParams,Link,useNavigate} from "react-router-dom";
-import { useEffect,useState} from "react";
-import { gg } from "../DB/Users";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
 import { FaUser } from "react-icons/fa";
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import { RiPencilFill } from "react-icons/ri";
-
+import Button from "@mui/material/Button";
+import { fetchDat } from "../DB/API";
+import Backdrop from "@mui/material/Backdrop";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import axios from "axios";
 const style = {
-  position: 'absolute',
-  
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+
   width: 400,
-  height: 250,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  height: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-  flexDirection: 'column'
 };
-export default function MAN(){
-    
-    const [open, setOpen] = useState(false);
+export default function MAN() {
+  const [ope, setOpe] = useState(true);
+  const [mk, SetMk] = useState(true);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const Navigate = useNavigate();
 
-    const[task,setTask]=useState("");
+  const [d, setD] = useState("");
+  let res = useCallback(async () => {
+    const resd = await fetchDat();
+    await setD(resd);
+  }, []);
+  useEffect(() => {
+    if (!localStorage.getItem("auth")) Navigate("/login");
+    res();
+  }, [res, mk]);
 
-    const[desc,setDesc]=useState("");
-
-    const[dead,setDe]=useState("");
-
-    const[emp,setEmp]=useState(0);
-
-    const handleOpen = () => setOpen(true);
-
-    const handleClose = () =>{
-      setTask("");
-      setDesc("");
-      setOpen(false);
-    }
-     
-    const{id}=useParams();
-
-    const Navigate=useNavigate();
-
-    const r=gg.filter((a)=>a.manage_id==id);
-
-    let e=gg.filter((a)=>a.manager_id==id);
-
-    let f=e.map((o)=><option key={o.emp_id} value={o.emp_id}>{o.name}</option>)
-
-    let employees=e.map((a)=><div key={a.emp_id}><li><Link  className="emp" to={`/${a.emp_id}/employee`}>{a.name.toUpperCase()}</Link></li><br></br></div>);
-
-       function AssignTask(e){
-      e.preventDefault();
-      if(!task.length||!desc.length||!dead.length){
-           alert("some field is ,missing enter that");
-           setOpen(true);
-           return;
-      }
-      let c=[];
-      let curr=new Date();
-      c.push(curr.getDate());
-      c.push(curr.getMonth()+1);
-      c.push(curr.getFullYear());
-      let y=`${dead}`.split("-").reverse().join("/")
-      let h=0;
-      for(let y of gg){
-        if(y.emp_id==emp){
-            h=gg.indexOf(y);
-        }
-      }
-     console.log([...gg[h].task]);
-      if(task.length&&desc.length&&dead.length){
-      gg[h].task.push({ name: task, desc, due: y, status: "Assigned", assi: c.join("/") });
-      }
-      console.log(gg[h].task);
-      handleClose();
-    }
-
-    useEffect(()=>{
-        if(!localStorage.getItem("auth")) Navigate("/login");
-        });
-
-    let y=localStorage.getItem("au")&&localStorage.getItem("auth");
-        
-    let name=r[0].name;
-     
-    function selectAssing(e){
-      setEmp(e);
-    }
-  
+  const { id } = useParams();
+  let mmo = JSON.parse(localStorage.getItem("au"));
+  let mm = [mmo];
+  if (!d) {
     return (
-    <div >
-      <div>
-       <Button style={{marginRight:"500px"}}variant="contained" color="error"><Link style={{textDecoration:"none",color:"white"}} to={`/${id}/logout`}>LOG OUT</Link></Button>
-      
-     
-       <FaUser style={{paddingTop:"5px",marginRight:"2px"}}/>:{y}
-       <h1>MANAGER NAME:{name.toUpperCase()}</h1>
-      </div>
-      <h2>EMPLOYEE UNDER HIM</h2>
-      <div>
-      <Button variant="contained" onClick={handleOpen}><RiPencilFill style={{marginRight:"3px"}}/>ASSIGN TASK</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <Backdrop
+        sx={(theme) => ({
+          color: "#fff",
+          zIndex: theme.zIndex.drawer + 1,
+        })}
+        open={ope}
       >
-        <Box style={{display:"flex",flexDirection:"column"}}sx={style}>
-          <form onSubmit={AssignTask}>
-          <b>TASK NAME:</b><input style={{marginLeft:"12px"}}onChange={(e)=>setTask(e.target.value)} value={task} placeholder="task" required type="text"></input>
-          <br></br>
-          <br></br>
-          <b>DESCRIPTION:</b><input onChange={(e)=>setDesc(e.target.value)} value={desc} required placeholder="desc" type="text"></input>
-          <br></br>
-          <br></br>
-          <b>DEADLINE:</b><input onChange={(e)=>setDe(e.target.value)} required type="date"></input>
-          <br></br>
-          <br></br>
-          <b>ASSIGNING TO:</b><select onChange={(e)=>selectAssing(e.target.value)}>
-            {f}
-          </select>
-          <br></br>
-          <br></br><Stack style={{marginLeft:"100px",marginTop:"5px"}} spacing={2} direction="row">
-          <Button type="submit" onClick={AssignTask}variant="contained">Save</Button>
-          <Button onClick={handleClose}variant="contained">Cancel</Button>
-          </Stack>
-          </form>
-        </Box>
-      </Modal>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
+  let nm = {};
+  const data = d.filter((m) => m.id == mm[0].id);
+  let hve = data[0].employees;
+  let e = d.filter((a) => a.managerId == id);
+  let empty = d.filter((a) => a.managerId == null && !a.isManager);
+  function om(a) {
+    if (nm[a]) {
+      delete nm[a];
+    } else {
+      nm[a] = true;
+    }
+  }
+  let empemp = empty.map((v) => (
+    <div
+      key={v.id}
+      style={{ display: "flex" }}
+    >
+      <Checkbox
+        onChange={() => {
+          om(v.id);
+        }}
+      />
+      <div style={{ marginTop: "8px" }}>{v.name}</div>
     </div>
-      <ol>
-       {employees}
-      </ol>
-      
-   </div>
- );}
+  ));
 
+  async function asn(e) {
+    e.preventDefault();
+    let p = Object.keys(nm).map((l) => parseInt(l));
+    await axios.patch(
+      `https://free-ap-south-1.cosmocloud.io/development/api/userdetails/${data[0]._id}`,
+      { employees: p },
+      {
+        headers: {
+          environmentId: "670e99ff59c9b368f802bb25",
+          projectid: "670e99ff59c9b368f802bb24",
+        },
+      },
+    );
 
+    let g = JSON.parse(localStorage.getItem("auth"));
+    for (let a in nm) {
+      let n = d.filter((b) => b.id == a);
+      await axios.patch(
+        `https://free-ap-south-1.cosmocloud.io/development/api/userdetails/${n[0]._id}`,
+        { managerId: parseInt(g.id) },
+        {
+          headers: {
+            environmentId: "670e99ff59c9b368f802bb25",
+            projectid: "670e99ff59c9b368f802bb24",
+          },
+        },
+      );
+    }
+    SetMk(!mk);
+    handleClose();
+  }
+  let f = e.map((a) => (
+    <div key={a.id}>
+      <li>
+        <Link
+          className="emp"
+          to={`/${a.id}/employee`}
+        >
+          {a.name.toUpperCase()}
+        </Link>
+      </li>
+      <br></br>
+    </div>
+  ));
 
-
- 
-
-   
-
-
- 
-
-     
-  
+  return (
+    <div>
+      <div>
+        <Button
+          style={{ marginRight: "500px" }}
+          variant="contained"
+          color="error"
+        >
+          <Link
+            style={{ textDecoration: "none", color: "white" }}
+            to={`/${mm[0].id}/logout`}
+          >
+            LOG OUT
+          </Link>
+        </Button>
+        <FaUser style={{ paddingTop: "5px", marginRight: "2px" }} />
+        {mm[0].name}
+        <h1>MANAGER NAME: {mm[0].name.toUpperCase()}</h1>
+      </div>
+      <ol>{f}</ol>
+      <div>
+        {hve ? (
+          <p></p>
+        ) : (
+          <div>
+            <Button onClick={handleOpen}>ADD EMPLOYEE</Button>
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                ></Typography>
+                <form onSubmit={asn}>
+                  {empemp}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                  >
+                    Submit
+                  </Button>
+                </form>
+                <Typography
+                  id="modal-modal-description"
+                  sx={{ mt: 2 }}
+                ></Typography>
+              </Box>
+            </Modal>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
