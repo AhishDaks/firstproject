@@ -2,7 +2,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { FaUser } from "react-icons/fa";
 import Button from "@mui/material/Button";
-import { fetchDat } from "../DB/API";
+import { fetchData } from "../DB/API";
 import Backdrop from "@mui/material/Backdrop";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -10,66 +10,65 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
+import Alert from "@mui/material/Alert";
 
-  width: 400,
-  height: 500,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 export default function MAN() {
-  const [ope, setOpe] = useState(true);
-  const [mk, SetMk] = useState(true);
+  const [circular, setCircular] = useState(false);
   const [open, setOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(false);
+  const [render, setRender] = useState(true);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    SetDisplayMessage("");
+    setRender(!render);
+    setOpen(false);
+  };
+
+  const [displayMessage, SetDisplayMessage] = useState("");
   const Navigate = useNavigate();
 
-  const [d, setD] = useState("");
-  let res = useCallback(async () => {
-    const resd = await fetchDat();
-    await setD(resd);
+  const [apiData, setApiData] = useState("");
+  let response = useCallback(async () => {
+    const response = await fetchData();
+    await setApiData(response);
   }, []);
   useEffect(() => {
     if (!localStorage.getItem("auth")) Navigate("/login");
-    res();
-  }, [res, mk]);
+    response();
+  }, [response, render]);
 
   const { id } = useParams();
-  let mmo = JSON.parse(localStorage.getItem("au"));
-  let mm = [mmo];
-  if (!d) {
+  let loggedIn = JSON.parse(localStorage.getItem("au"));
+
+  if (!apiData) {
     return (
       <Backdrop
         sx={(theme) => ({
           color: "#fff",
           zIndex: theme.zIndex.drawer + 1,
         })}
-        open={ope}
+        open={true}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
     );
   }
-  let nm = {};
-  const data = d.filter((m) => m.id == mm[0].id);
-  let hve = data[0].employees;
-  let e = d.filter((a) => a.managerId == id);
-  let empty = d.filter((a) => a.managerId == null && !a.isManager);
+  let noManagerEmployeesID = {};
+  const data = apiData.filter((m) => m.id == [loggedIn][0].id);
+  console.log(data[0].employees, [loggedIn][0]);
+  let managerEmployees = apiData.filter((a) => a.managerId == id);
+
+  let noManagerEmployee = apiData.filter(
+    (a) => a.managerId == null && !a.isManager,
+  );
   function om(a) {
-    if (nm[a]) {
-      delete nm[a];
+    if (noManagerEmployeesID[a]) {
+      delete noManagerEmployeesID[a];
     } else {
-      nm[a] = true;
+      noManagerEmployeesID[a] = true;
     }
   }
-  let empemp = empty.map((v) => (
+  let empemp = noManagerEmployee.map((v) => (
     <div
       key={v.id}
       style={{ display: "flex" }}
@@ -82,13 +81,28 @@ export default function MAN() {
       <div style={{ marginTop: "8px" }}>{v.name}</div>
     </div>
   ));
+  let successMsg = (
+    <Alert severity="success">
+      {empemp.length} {empemp.length > 1 ? "employees" : "employee"} assinged
+      successfully
+    </Alert>
+  );
 
+  let failureMsg = <Alert severity="error">error in assinging</Alert>;
   async function asn(e) {
     e.preventDefault();
-    let p = Object.keys(nm).map((l) => parseInt(l));
+    setCircular(true);
+    setTimeout(() => setCircular(false), 1000);
+    let arrayOfEmptyEmployee = Object.keys(noManagerEmployeesID).map((l) =>
+      parseInt(l),
+    );
+    if (arrayOfEmptyEmployee.length <= 0) {
+      handleClose();
+      return;
+    }
     await axios.patch(
       `https://free-ap-south-1.cosmocloud.io/development/api/userdetails/${data[0]._id}`,
-      { employees: p },
+      { employees: arrayOfEmptyEmployee },
       {
         headers: {
           environmentId: "670e99ff59c9b368f802bb25",
@@ -97,24 +111,33 @@ export default function MAN() {
       },
     );
 
-    let g = JSON.parse(localStorage.getItem("auth"));
-    for (let a in nm) {
-      let n = d.filter((b) => b.id == a);
-      await axios.patch(
-        `https://free-ap-south-1.cosmocloud.io/development/api/userdetails/${n[0]._id}`,
-        { managerId: parseInt(g.id) },
-        {
-          headers: {
-            environmentId: "670e99ff59c9b368f802bb25",
-            projectid: "670e99ff59c9b368f802bb24",
-          },
-        },
+    let logginedUser = JSON.parse(localStorage.getItem("auth"));
+    let checkPromise = [];
+    for (let a in noManagerEmployeesID) {
+      let patchId = apiData.filter((b) => b.id == a);
+      checkPromise.push(
+        Promise.resolve(
+          axios.patch(
+            `https://free-ap-south-1.cosmocloud.io/development/api/userdetails/${patchId[0]._id}`,
+            { managerId: parseInt(logginedUser.id) },
+            {
+              headers: {
+                environmentId: "670e99ff59c9b368f802bb25",
+                projectid: "670e99ff59c9b368f802bb24",
+              },
+            },
+          ),
+        ),
       );
     }
-    SetMk(!mk);
-    handleClose();
+    Promise.all(checkPromise)
+      .then(() => SetDisplayMessage(successMsg), setModalContent(true))
+      .catch(() => {
+        SetDisplayMessage(failureMsg);
+      });
   }
-  let f = e.map((a) => (
+  console.log(managerEmployees);
+  let linkForEmployee = managerEmployees.map((a) => (
     <div key={a.id}>
       <li>
         <Link
@@ -127,6 +150,13 @@ export default function MAN() {
       <br></br>
     </div>
   ));
+  function handleSuccess() {
+    setModalContent(true);
+    setCircular(true);
+    handleClose();
+    setModalContent(false);
+    setCircular(false);
+  }
 
   return (
     <div>
@@ -138,47 +168,87 @@ export default function MAN() {
         >
           <Link
             style={{ textDecoration: "none", color: "white" }}
-            to={`/${mm[0].id}/logout`}
+            to={`/${[loggedIn][0].id}/logout`}
           >
             LOG OUT
           </Link>
         </Button>
         <FaUser style={{ paddingTop: "5px", marginRight: "2px" }} />
-        {mm[0].name}
-        <h1>MANAGER NAME: {mm[0].name.toUpperCase()}</h1>
+        {[loggedIn][0].name}
+        <h1>MANAGER NAME: {[loggedIn][0].name.toUpperCase()}</h1>
       </div>
-      <ol>{f}</ol>
+      <ol>{linkForEmployee}</ol>
       <div>
-        {hve ? (
+        {data[0].employees !== null && linkForEmployee.length ? (
           <p></p>
         ) : (
           <div>
             <Button onClick={handleOpen}>ADD EMPLOYEE</Button>
+
             <Modal
               open={open}
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
-              <Box sx={style}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+
+                  width: 400,
+                  height: `${noManagerEmployee.length}*100`,
+                  bgcolor: "background.paper",
+                  border: "2px solid #000",
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
                 <Typography
                   id="modal-modal-title"
                   variant="h6"
                   component="h2"
                 ></Typography>
-                <form onSubmit={asn}>
-                  {empemp}
-                  <Button
-                    type="submit"
-                    variant="contained"
-                  >
-                    Submit
-                  </Button>
-                </form>
-                <Typography
-                  id="modal-modal-description"
-                  sx={{ mt: 2 }}
-                ></Typography>
+                {modalContent ? (
+                  <form onSubmit={handleSuccess}>
+                    {displayMessage}
+                    <Button
+                      style={{ marginTop: "5px" }}
+                      type="submit"
+                      variant="contained"
+                    >
+                      OK
+                    </Button>
+                  </form>
+                ) : (
+                  <>
+                    <form onSubmit={asn}>
+                      {noManagerEmployee.length ? empemp : <p>NO EMPLOYEES</p>}
+                      <Button
+                        type="submit"
+                        variant="contained"
+                      >
+                        {noManagerEmployee.length ? "Submit" : "OK"}
+                      </Button>
+                    </form>
+                    <Typography
+                      id="modal-modal-description"
+                      sx={{ mt: 2 }}
+                    ></Typography>
+                    <Backdrop
+                      sx={(theme) => ({
+                        color: "#fff",
+                        zIndex: theme.zIndex.drawer + 1,
+                      })}
+                      open={circular}
+                      onClick={handleClose}
+                    >
+                      <CircularProgress color="inherit" />
+                    </Backdrop>
+                  </>
+                )}
               </Box>
             </Modal>
           </div>

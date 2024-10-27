@@ -1,6 +1,6 @@
 import axios from "axios";
-async function fetchDat() {
-  const res = await axios.get(
+async function fetchData() {
+  const result = await axios.get(
     `https://free-ap-south-1.cosmocloud.io/development/api/userdetails?limit=100&offset=0`,
     {
       headers: {
@@ -9,7 +9,7 @@ async function fetchDat() {
       },
     },
   );
-  return res.data.data;
+  return result.data.data;
 }
 
-export { fetchDat };
+export { fetchData };

@@ -7,36 +7,34 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { SignInPage } from "@toolpad/core";
 import Moda from "../modal/Moda";
-import { fetchDat } from "../DB/API";
+import { fetchData } from "../DB/API";
 export default function LOGIN() {
   const Navigate = useNavigate();
+  const [mail, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
 
-  const [type, SetType] = useState();
-  const [name, setName] = useState("");
-  const [pass, setPass] = useState("");
+  let showMsg = "invalid username or password!";
 
-  const [err, setErr] = useState(false);
-
-  let aa = "invalid username or password!";
-
-  async function asm(e) {
-    SetType(false);
+  async function handleLogin(e) {
     e.preventDefault();
-    const res = await fetchDat();
-    let ko = res.filter((a) => a.email == name && a.password == pass);
-    if (ko.length) {
-      let g = JSON.stringify(...ko);
+    const response = await fetchData();
+    let validate = response.filter(
+      (a) => a.email == mail && a.password == password,
+    );
+    if (validate.length) {
+      let userData = JSON.stringify(...validate);
 
-      if (!ko[0].isManager) {
-        localStorage.setItem("au", g);
-        Navigate(`/${ko[0].id}/employee`);
+      if (!validate[0].isManager) {
+        localStorage.setItem("au", userData);
+        Navigate(`/${validate[0].id}/employee`);
       } else {
-        localStorage.setItem("au", g);
-        localStorage.setItem("auth", g);
-        Navigate(`/${ko[0].id}/manager`);
+        localStorage.setItem("au", userData);
+        localStorage.setItem("auth", userData);
+        Navigate(`/${validate[0].id}/manager`);
       }
     } else {
-      setErr(true);
+      setError(true);
     }
   }
 
@@ -47,15 +45,14 @@ export default function LOGIN() {
       </h1>
 
       <Moda />
-      <form onSubmit={asm}>
-        <p style={{ color: "red" }}>{err && aa}</p>
+      <form onSubmit={handleLogin}>
+        <p style={{ color: "red" }}>{error && showMsg}</p>
         <MdEmail style={{ height: "50px", marginRight: "2px" }} />{" "}
         <TextField
           label="Email"
           id="outlined-basic"
           onChange={(e) => {
-            SetType(true);
-            setName(e.target.value);
+            setEmail(e.target.value);
           }}
           type="email"
           variant="outlined"
@@ -66,15 +63,14 @@ export default function LOGIN() {
         <TextField
           id="outlined-basic"
           onChange={(e) => {
-            SetType(true);
-            setPass(e.target.value);
+            setPassword(e.target.value);
           }}
           label="Password"
           variant="outlined"
         />
         <br></br>
         <br></br>
-        {name.length >= 2 && pass.length >= 2 ? (
+        {mail.length >= 2 && password.length >= 2 ? (
           <Button
             type="submit"
             variant="contained"

@@ -1,18 +1,19 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 export default function Logout() {
-  const [l, setL] = useState(true);
-  const Navigate = useNavigate();
+  const [render, setRender] = useState(true);
+  const { id } = useParams();
 
+  const Navigate = useNavigate();
+  let ID = JSON.parse(localStorage.getItem("au"));
   useEffect(() => {
     if (!localStorage.getItem("au") && !localStorage.getItem("auth"))
       Navigate("/login");
-  }, [l]);
+  }, [render]);
 
   function am() {
-    localStorage.removeItem("au");
-    localStorage.removeItem("auth");
-    setL(false);
+    localStorage.clear();
+    setRender(false);
   }
   function om() {
     window.history.back();

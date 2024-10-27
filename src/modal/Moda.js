@@ -13,40 +13,40 @@ import { useNavigate } from "react-router-dom";
 export default function Moda() {
   const Navigate = useNavigate();
   const [name, setName] = useState("");
-  const [pas, setPas] = useState("");
+  const [password, setPassWord] = useState("");
   const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
-  const [ope, setOpe] = useState(false);
+  const [open, setOpen] = useState(false);
   const handeClose = () => {
-    setOpe(false);
+    setOpen(false);
   };
   const [show, setShow] = useState();
 
-  const [emp, setEmp] = useState(false);
-  const [ma, setMa] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const [employee, setEmployee] = useState(true);
+  const [manager, setManager] = useState(false);
+  const handleOpen = () => setModalOpen(true);
   const handleClose = () => {
     setShow("");
-    setOpen(false);
+    setModalOpen(false);
   };
 
-  async function adddb(e) {
+  async function newUser(e) {
     e.preventDefault();
-    setOpe(true);
-    setTimeout(() => setOpe(false), 3000);
-    let i = Math.floor(Math.random() * 10000 - 1);
-    let a = {
+    setOpen(true);
+    setTimeout(() => setOpen(false), 3000);
+    let randomId = Math.floor(Math.random() * 10000 - 1);
+    let apiPostData = {
       name,
-      password: pas,
+      password: password,
       email,
       age: parseInt(age),
-      id: i,
-      isManager: ma,
+      id: randomId,
+      isManager: manager,
     };
     await axios
       .post(
         "https://free-ap-south-1.cosmocloud.io/development/api/userdetails",
-        a,
+        apiPostData,
         {
           headers: {
             environmentId: "670e99ff59c9b368f802bb25",
@@ -54,35 +54,32 @@ export default function Moda() {
           },
         },
       )
-      .then((re) => {
+      .then(() => {
         setShow(<SimpleAlert />);
-        console.log(i);
-        if (!a.isManager) {
+        if (!apiPostData.isManager) {
           console.log("emplo");
-          localStorage.setItem("au", JSON.stringify(a));
-          Navigate(`/${i}/employee`);
+          localStorage.setItem("au", JSON.stringify(apiPostData));
+          Navigate(`/${randomId}/employee`);
         } else {
           console.log("manager");
-          localStorage.setItem("au", JSON.stringify(a));
-          localStorage.setItem("auth", JSON.stringify(a));
-          Navigate(`/${i}/manager`);
+          localStorage.setItem("au", JSON.stringify(apiPostData));
+          localStorage.setItem("auth", JSON.stringify(apiPostData));
+          Navigate(`/${randomId}/manager`);
         }
       })
-      .catch((er) =>
-        setShow(<Alert severity="error">submission failed</Alert>),
-      );
+      .catch(() => setShow(<Alert severity="error">submission failed</Alert>));
   }
 
   function decide() {
-    setEmp(true);
-    setMa(false);
+    setEmployee(true);
+    setManager(false);
   }
 
   function decide1() {
-    setMa(true);
-    setEmp(false);
+    setManager(true);
+    setEmployee(false);
   }
-  const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -97,7 +94,7 @@ export default function Moda() {
       </div>
 
       <Modal
-        open={open}
+        open={modalOpen}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -122,9 +119,9 @@ export default function Moda() {
             </div>
             <br></br>
             {show}
-            {emp == true ? <p>Employee</p> : <p>Manager</p>}
+            {employee == true ? <p>Employee</p> : <p>Manager</p>}
             <div>
-              <form onSubmit={adddb}>
+              <form onSubmit={newUser}>
                 <div
                   style={{
                     display: "flex",
@@ -140,7 +137,7 @@ export default function Moda() {
                   />
                   <br></br>
                   <TextField
-                    onChange={(e) => setPas(e.target.value)}
+                    onChange={(e) => setPassWord(e.target.value)}
                     required
                     id="outlined-required"
                     label="Password"
@@ -165,7 +162,7 @@ export default function Moda() {
                       <Button
                         variant="contained"
                         style={{ height: "30px", marginTop: "13px" }}
-                        onClick={adddb}
+                        type="submit"
                       >
                         Submit
                       </Button>
@@ -174,8 +171,7 @@ export default function Moda() {
                           color: "#fff",
                           zIndex: theme.zIndex.drawer + 1,
                         })}
-                        open={ope}
-                        onClick={handeClose}
+                        open={open}
                       >
                         <CircularProgress color="inherit" />
                       </Backdrop>
