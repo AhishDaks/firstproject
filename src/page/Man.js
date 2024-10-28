@@ -17,6 +17,7 @@ export default function MAN() {
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState(false);
   const [render, setRender] = useState(true);
+  const [checkBoxEmployee, setCheckBoxEmployee] = useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     SetDisplayMessage("");
@@ -53,20 +54,22 @@ export default function MAN() {
       </Backdrop>
     );
   }
-  let noManagerEmployeesID = {};
+  const managerName = apiData.filter((m) => m.id == id);
+
   const data = apiData.filter((m) => m.id == [loggedIn][0].id);
-  console.log(data[0].employees, [loggedIn][0]);
   let managerEmployees = apiData.filter((a) => a.managerId == id);
 
   let noManagerEmployee = apiData.filter(
     (a) => a.managerId == null && !a.isManager,
   );
   function om(a) {
-    if (noManagerEmployeesID[a]) {
-      delete noManagerEmployeesID[a];
-    } else {
-      noManagerEmployeesID[a] = true;
-    }
+    setCheckBoxEmployee((prev) => {
+      if (prev.includes(a)) {
+        return prev.filter((id) => id !== a);
+      } else {
+        return [...prev, a];
+      }
+    });
   }
   let empemp = noManagerEmployee.map((v) => (
     <div
@@ -83,7 +86,8 @@ export default function MAN() {
   ));
   let successMsg = (
     <Alert severity="success">
-      {empemp.length} {empemp.length > 1 ? "employees" : "employee"} assinged
+      {checkBoxEmployee.length}{" "}
+      {checkBoxEmployee.length > 1 ? "employees" : "employee"} assinged
       successfully
     </Alert>
   );
@@ -91,11 +95,12 @@ export default function MAN() {
   let failureMsg = <Alert severity="error">error in assinging</Alert>;
   async function asn(e) {
     e.preventDefault();
+    if (!checkBoxEmployee.length) {
+      handleClose();
+    }
     setCircular(true);
     setTimeout(() => setCircular(false), 1000);
-    let arrayOfEmptyEmployee = Object.keys(noManagerEmployeesID).map((l) =>
-      parseInt(l),
-    );
+    let arrayOfEmptyEmployee = checkBoxEmployee;
     if (arrayOfEmptyEmployee.length <= 0) {
       handleClose();
       return;
@@ -112,9 +117,11 @@ export default function MAN() {
     );
 
     let logginedUser = JSON.parse(localStorage.getItem("auth"));
+
     let checkPromise = [];
-    for (let a in noManagerEmployeesID) {
+    for (let a of checkBoxEmployee) {
       let patchId = apiData.filter((b) => b.id == a);
+      console.log(patchId);
       checkPromise.push(
         Promise.resolve(
           axios.patch(
@@ -136,7 +143,6 @@ export default function MAN() {
         SetDisplayMessage(failureMsg);
       });
   }
-  console.log(managerEmployees);
   let linkForEmployee = managerEmployees.map((a) => (
     <div key={a.id}>
       <li>
@@ -175,7 +181,7 @@ export default function MAN() {
         </Button>
         <FaUser style={{ paddingTop: "5px", marginRight: "2px" }} />
         {[loggedIn][0].name}
-        <h1>MANAGER NAME: {[loggedIn][0].name.toUpperCase()}</h1>
+        <h1>MANAGER NAME: {managerName[0].name.toUpperCase()}</h1>
       </div>
       <ol>{linkForEmployee}</ol>
       <div>
@@ -226,6 +232,7 @@ export default function MAN() {
                   <>
                     <form onSubmit={asn}>
                       {noManagerEmployee.length ? empemp : <p>NO EMPLOYEES</p>}
+
                       <Button
                         type="submit"
                         variant="contained"
