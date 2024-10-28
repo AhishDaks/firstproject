@@ -168,12 +168,19 @@ export default function MAN() {
     <div>
       <div>
         <Button
-          style={{ marginRight: "500px" }}
+          style={{
+            marginRight: "500px",
+            width: "94px",
+            height: "28px",
+          }}
           variant="contained"
           color="error"
         >
           <Link
-            style={{ textDecoration: "none", color: "white" }}
+            style={{
+              textDecoration: "none",
+              color: "white",
+            }}
             to={`/${[loggedIn][0].id}/logout`}
           >
             LOG OUT
