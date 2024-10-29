@@ -83,9 +83,9 @@ export default function Moda() {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <p>new user?</p>
+        <p>Don't have an account?</p>
         <Button
-          variant="contained"
+          variant="text"
           style={{ height: "30px", marginTop: "13px" }}
           onClick={handleOpen}
         >
@@ -103,16 +103,18 @@ export default function Moda() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", justifyContent: "space-evenly" }}>
               <Button
-                variant="outlined"
+                variant={employee ? "contained" : "outlined"}
                 onClick={decide}
                 style={{ height: "30px", marginTop: "13px" }}
+                color={employee ? "success" : ""}
               >
                 Employee
               </Button>
               <Button
-                variant="outlined"
+                variant={manager ? "contained" : "outlined"}
                 onClick={decide1}
                 style={{ height: "30px", marginTop: "13px" }}
+                color={manager ? "success" : ""}
               >
                 Manager
               </Button>
@@ -141,6 +143,7 @@ export default function Moda() {
                     required
                     id="outlined-required"
                     label="Password"
+                    type="password"
                   />
                   <br></br>
                   <TextField
@@ -160,7 +163,7 @@ export default function Moda() {
                   <div style={{ display: "flex", justifyContent: "center" }}>
                     <div>
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         style={{ height: "30px", marginTop: "13px" }}
                         type="submit"
                       >
@@ -177,12 +180,13 @@ export default function Moda() {
                       </Backdrop>
                     </div>
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       style={{
                         height: "30px",
                         marginTop: "13px",
                         marginLeft: "4px",
                       }}
+                      onClick={handleClose}
                     >
                       Cancel
                     </Button>

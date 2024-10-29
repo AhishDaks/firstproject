@@ -44,7 +44,6 @@ export default function LOGIN() {
         <SignInPage />
       </h1>
 
-      <Moda />
       <form onSubmit={handleLogin}>
         <p style={{ color: "red" }}>{error && showMsg}</p>
         <MdEmail style={{ height: "50px", marginRight: "2px" }} />{" "}
@@ -88,6 +87,7 @@ export default function LOGIN() {
           </Button>
         )}
       </form>
+      <Moda />
     </div>
   );
 }
