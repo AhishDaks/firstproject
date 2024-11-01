@@ -1,64 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-   
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-body{
-    color: black;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    text-align: center;
-    font-family: "Poppins", sans-serif;
- 
-    
+body {
+  font-family: "poppins", sans-serif;
+  background-color: black;
+  color: black;
 }
 
-.oo{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
-    padding: 20px 50px;
-    color: black;
+.lo {
+  margin-right: 600px;
+  text-decoration: none;
+  border: 2px solid red;
+  background-color: red;
+  color: black;
 }
 
-
-
-.mm{
-    border-radius: 5px;
-    padding-inline: 2px;
-    height: 20px;
-    margin-left: 2px;
-    display:flexbox;
+.emp {
+  text-decoration: none;
+  color: white;
+  margin-left: 0px;
+}
+.emp:hover {
+  border: 1px solid whitesmoke;
+  background-color: azure;
+  color: black;
 }
 
-.lo{
-    margin-right: 600px;
-    text-decoration: none;
-    border: 2px solid red;
-    background-color: red;
-    color: black;
-    
-    
+body {
+  margin: 0px;
 }
 
-.emp{
-    text-decoration: none;
-    color: black;
-    margin-left: 0px;
-}
-.emp:hover{
-    border: 2px solid plum;
-    background-color: azure;
-    color: black;
-}
-
-.login{
-    margin-left: 480px;
-    margin-top: 1px;
-    border: 2px solid black;
+.hover:hover {
+  background-color: blue;
 }

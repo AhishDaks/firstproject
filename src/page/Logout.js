@@ -1,11 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 export default function Logout() {
   const [render, setRender] = useState(true);
-  const { id } = useParams();
 
   const Navigate = useNavigate();
-  let ID = JSON.parse(localStorage.getItem("au"));
+
   useEffect(() => {
     if (!localStorage.getItem("au") && !localStorage.getItem("auth"))
       Navigate("/login");
@@ -20,30 +19,32 @@ export default function Logout() {
   }
   return (
     <div>
-      <p style={{ color: "black" }}>Are you sure want to log out?</p>
-      <button
-        onClick={am}
-        style={{
-          textDecoration: "none",
-          marginRight: "2px",
-          border: "2px solid red",
-          backgroundColor: "red",
-          color: "white",
-        }}
-      >
-        YES
-      </button>
-      <button
-        onClick={om}
-        style={{
-          textDecoration: "none",
-          border: "2px solid red",
-          backgroundColor: "red",
-          color: "white",
-        }}
-      >
-        NO
-      </button>
+      <center>
+        <p style={{ color: "white" }}>Are you sure want to log out?</p>
+        <button
+          onClick={am}
+          style={{
+            textDecoration: "none",
+            marginRight: "2px",
+            border: "2px solid red",
+            backgroundColor: "red",
+            color: "white",
+          }}
+        >
+          YES
+        </button>
+        <button
+          onClick={om}
+          style={{
+            textDecoration: "none",
+            border: "2px solid red",
+            backgroundColor: "red",
+            color: "white",
+          }}
+        >
+          NO
+        </button>
+      </center>
     </div>
   );
 }

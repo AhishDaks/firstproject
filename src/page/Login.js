@@ -8,6 +8,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { SignInPage } from "@toolpad/core";
 import Moda from "../modal/Moda";
 import { fetchData } from "../DB/API";
+
 export default function LOGIN() {
   const Navigate = useNavigate();
   const [mail, setEmail] = useState("");
@@ -39,55 +40,89 @@ export default function LOGIN() {
   }
 
   return (
-    <div className=" oo ">
-      <h1>
-        <SignInPage />
-      </h1>
-
-      <form onSubmit={handleLogin}>
-        <p style={{ color: "red" }}>{error && showMsg}</p>
-        <MdEmail style={{ height: "50px", marginRight: "2px" }} />{" "}
-        <TextField
-          label="Email"
-          id="outlined-basic"
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          type="email"
-          variant="outlined"
-        />
-        <br></br>
-        <br></br>
-        <RiLockPasswordFill style={{ height: "50px", marginRight: "2px" }} />
-        <TextField
-          id="outlined-basic"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          label="Password"
-          variant="outlined"
-        />
-        <br></br>
-        <br></br>
-        {mail.length >= 2 && password.length >= 2 ? (
-          <Button
-            type="submit"
-            variant="contained"
-            color="success"
-          >
-            Submit
-          </Button>
-        ) : (
-          <Button
-            disabled
-            variant="contained"
-            color="error"
-          >
-            Submit
-          </Button>
-        )}
-      </form>
-      <Moda />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        backgroundColor: "white",
+      }}
+    >
+      <div
+        style={{
+          width: "768px",
+          height: "780px",
+          marginTop: "45px",
+          backgroundColor: "white",
+        }}
+      >
+        <div style={{}}>
+          <h1>
+            <SignInPage />
+          </h1>
+          <center>
+            <form onSubmit={handleLogin}>
+              <p style={{ color: "red" }}>{error && showMsg}</p>
+              <MdEmail style={{ height: "50px", marginRight: "2px" }} />{" "}
+              <TextField
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                label="email"
+                type="email"
+                variant="outlined"
+              />
+              <br></br>
+              <br></br>
+              <RiLockPasswordFill
+                style={{ height: "50px", marginRight: "6px" }}
+              />
+              <TextField
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                label="Password"
+                type="password"
+                variant="outlined"
+              />
+              <br></br>
+              <br></br>
+              {mail.length >= 2 && password.length >= 2 ? (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="success"
+                >
+                  Submit
+                </Button>
+              ) : (
+                <Button
+                  disabled
+                  variant="contained"
+                  color="error"
+                >
+                  Submit
+                </Button>
+              )}
+            </form>
+            <br></br>
+            <Moda />
+          </center>
+        </div>
+      </div>
+      <div
+        style={{
+          backgroundColor: "blue",
+          opacity: "70%",
+          width: "768px",
+          height: `{window.innerHeight}px`,
+        }}
+      >
+        <center style={{ marginTop: "300px", color: "white" }}>
+          <h1>
+            <i>Tech Global</i>
+          </h1>
+        </center>
+      </div>
     </div>
   );
 }

@@ -82,16 +82,22 @@ export default function Moda() {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <div>
-      <div style={{ display: "flex" }}>
-        <p>Don't have an account?</p>
-        <Button
-          variant="text"
-          style={{ height: "30px", marginTop: "13px" }}
-          onClick={handleOpen}
+      <center>
+        <div
+          style={{
+            flexDirection: "column",
+          }}
         >
-          Sign up
-        </Button>
-      </div>
+          Don't have an account?
+          <Button
+            variant="text"
+            style={{ height: "30px", marginTop: "0px", color: "black" }}
+            onClick={handleOpen}
+          >
+            Sign up
+          </Button>
+        </div>
+      </center>
 
       <Modal
         open={modalOpen}
@@ -121,7 +127,7 @@ export default function Moda() {
             </div>
             <br></br>
             {show}
-            {employee == true ? <p>Employee</p> : <p>Manager</p>}
+
             <div>
               <form onSubmit={newUser}>
                 <div
@@ -164,7 +170,11 @@ export default function Moda() {
                     <div>
                       <Button
                         variant="outlined"
-                        style={{ height: "30px", marginTop: "13px" }}
+                        style={{
+                          height: "30px",
+                          marginTop: "13px",
+                          color: "black",
+                        }}
                         type="submit"
                       >
                         Submit
@@ -185,6 +195,7 @@ export default function Moda() {
                         height: "30px",
                         marginTop: "13px",
                         marginLeft: "4px",
+                        color: "black",
                       }}
                       onClick={handleClose}
                     >
